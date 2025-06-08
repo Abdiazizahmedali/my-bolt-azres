@@ -1,0 +1,484 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Kitchen Display System{% endblock %}
+
+{% block head_include %}
+<style>
+    body { 
+        margin: 0; 
+        padding: 0; 
+        background: #1a1a1a; 
+        color: white; 
+        font-family: 'Arial', sans-serif;
+        overflow-x: auto;
+    }
+    
+    .kitchen-header {
+        background: #2d3748;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #4a5568;
+    }
+    
+    .kitchen-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    
+    .current-time {
+        font-size: 1.2rem;
+        color: #a0aec0;
+    }
+    
+    .orders-container {
+        display: flex;
+        gap: 1.5rem;
+        padding: 2rem;
+        min-height: calc(100vh - 120px);
+        overflow-x: auto;
+    }
+    
+    .order-column {
+        min-width: 350px;
+        background: #2d3748;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 2px solid #4a5568;
+    }
+    
+    .column-header {
+        text-align: center;
+        padding: 1rem;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        border-radius: 12px 12px 0 0;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .pending-header { background: #e53e3e; }
+    .in-progress-header { background: #dd6b20; }
+    .ready-header { background: #38a169; }
+    
+    .order-card {
+        background: #4a5568;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #cbd5e0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .order-number {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #ffffff;
+    }
+    
+    .order-time {
+        color: #a0aec0;
+        font-size: 0.9rem;
+    }
+    
+    .table-info {
+        background: #1a202c;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .order-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #2d3748;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-name {
+        font-weight: 500;
+        color: #ffffff;
+    }
+    
+    .item-qty {
+        background: #4299e1;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        min-width: 30px;
+        text-align: center;
+    }
+    
+    .item-notes {
+        font-size: 0.8rem;
+        color: #fbb6ce;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+    
+    .special-instructions {
+        background: #553c9a;
+        color: #e9d8fd;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        border-left: 4px solid #805ad5;
+    }
+    
+    .order-actions {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+    
+    .start-btn {
+        background: #dd6b20;
+        color: white;
+    }
+    
+    .ready-btn {
+        background: #38a169;
+        color: white;
+    }
+    
+    .complete-btn {
+        background: #3182ce;
+        color: white;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.9;
+    }
+    
+    .empty-column {
+        text-align: center;
+        color: #a0aec0;
+        padding: 2rem;
+        font-style: italic;
+    }
+    
+    .order-timer {
+        font-size: 0.8rem;
+        color: #fbb6ce;
+        text-align: right;
+    }
+    
+    .urgeit {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    @media (max-width: 768px) {
+        .orders-container {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .order-column {
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="kitchen-header">
+    <div class="kitchen-title">🍳 Kitchen Display System</div>
+    <div class="current-time" id="current-time"></div>
+</div>
+
+<div class="orders-container">
+    <div class="order-column">
+        <div class="column-header pending-header">
+            📋 PENDING ORDERS
+        </div>
+        <div id="pending-orders">
+            <div class="empty-column">No pending orders</div>
+        </div>
+    </div>
+    
+    <div class="order-column">
+        <div class="column-header in-progress-header">
+            👨‍🍳 IN PROGRESS
+        </div>
+        <div id="in-progress-orders">
+            <div class="empty-column">No orders in progress</div>
+        </div>
+    </div>
+    
+    <div class="order-column">
+        <div class="column-header ready-header">
+            ✅ READY TO SERVE
+        </div>
+        <div id="ready-orders">
+            <div class="empty-column">No orders ready</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let orders = {};
+    
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleString();
+    }
+    
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Load initial orders
+    loadOrders();
+    
+    // Refresh orders every 30 seconds
+    setInterval(loadOrders, 30000);
+    
+    // Real-time updates
+    frappe.realtime.on('new_kitchen_order', function(data) {
+        addOrderToDisplay(data);
+    });
+    
+    frappe.realtime.on('order_status_update', function(data) {
+        updateOrderStatus(data);
+    });
+    
+    frappe.realtime.on('cancel_kitchen_order', function(data) {
+        removeOrderFromDisplay(data.order_id);
+    });
+    
+    function loadOrders() {
+        frappe.call({
+            method: 'restaurant_management.restaurant_management.doctype.restaurant_order.restaurant_order.get_kitchen_orders',
+            callback: function(response) {
+                if (response.message) {
+                    displayOrders(response.message);
+                }
+            }
+        });
+    }
+    
+    function displayOrders(ordersList) {
+        orders = {};
+        ordersList.forEach(order => {
+            orders[order.order_id] = order;
+        });
+        
+        renderOrders();
+    }
+    
+    function renderOrders() {
+        const pendingContainer = document.getElementById('pending-orders');
+        const inProgressContainer = document.getElementById('in-progress-orders');
+        const readyContainer = document.getElementById('ready-orders');
+        
+        // Clear containers
+        pendingContainer.innerHTML = '';
+        inProgressContainer.innerHTML = '';
+        readyContainer.innerHTML = '';
+        
+        let hasPending = false, hasInProgress = false, hasReady = false;
+        
+        Object.values(orders).forEach(order => {
+            const orderElement = createOrderElement(order);
+            
+            switch(order.status) {
+                case 'Pending':
+                    pendingContainer.appendChild(orderElement);
+                    hasPending = true;
+                    break;
+                case 'In Progress':
+                    inProgressContainer.appendChild(orderElement);
+                    hasInProgress = true;
+                    break;
+                case 'Ready':
+                    readyContainer.appendChild(orderElement);
+                    hasReady = true;
+                    break;
+            }
+        });
+        
+        // Show empty messages if needed
+        if (!hasPending) {
+            pendingContainer.innerHTML = '<div class="empty-column">No pending orders</div>';
+        }
+        if (!hasInProgress) {
+            inProgressContainer.innerHTML = '<div class="empty-column">No orders in progress</div>';
+        }
+        if (!hasReady) {
+            readyContainer.innerHTML = '<div class="empty-column">No orders ready</div>';
+        }
+    }
+    
+    function createOrderElement(order) {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order-card';
+        orderDiv.dataset.orderId = order.order_id;
+        
+        // Check if order is urgent (more than 30 minutes old)
+        const orderTime = new Date(order.order_time);
+        const now = new Date();
+        const minutesOld = (now - orderTime) / (1000 * 60);
+        
+        if (minutesOld > 30) {
+            orderDiv.classList.add('urgent');
+        }
+        
+        let itemsHtml = '';
+        order.items.forEach(item => {
+            itemsHtml += `
+                <li class="order-item">
+                    <div>
+                        <div class="item-name">${item.item_name}</div>
+                        ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ''}
+                    </div>
+                    <div class="item-qty">${item.qty}</div>
+                </li>
+            `;
+        });
+        
+        let actionsHtml = '';
+        switch(order.status) {
+            case 'Pending':
+                actionsHtml = `<button class="action-btn start-btn" onclick="updateOrderStatus('${order.order_id}', 'In Progress')">Start Cooking</button>`;
+                break;
+            case 'In Progress':
+                actionsHtml = `<button class="action-btn ready-btn" onclick="updateOrderStatus('${order.order_id}', 'Ready')">Mark Ready</button>`;
+                break;
+            case 'Ready':
+                actionsHtml = `<button class="action-btn complete-btn" onclick="updateOrderStatus('${order.order_id}', 'Completed')">Served</button>`;
+                break;
+        }
+        
+        orderDiv.innerHTML = `
+            <div class="order-header">
+                <div class="order-number">${order.order_id}</div>
+                <div class="order-time">${formatTime(order.order_time)}</div>
+            </div>
+            
+            <div class="table-info">
+                <span><strong>${order.order_type}</strong></span>
+                ${order.table ? `<span>Table: ${order.table}</span>` : ''}
+            </div>
+            
+            <ul class="order-items">${itemsHtml}</ul>
+            
+            ${order.special_instructions ? `<div class="special-instructions"><strong>Special Instructions:</strong><br>${order.special_instructions}</div>` : ''}
+            
+            <div class="order-timer">
+                ${minutesOld.toFixed(0)} minutes ago
+            </div>
+            
+            <div class="order-actions">${actionsHtml}</div>
+        `;
+        
+        return orderDiv;
+    }
+    
+    function formatTime(timeString) {
+        const date = new Date(timeString);
+        return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    
+    window.updateOrderStatus = function(orderId, status) {
+        frappe.call({
+            method: 'restaurant_management.restaurant_management.doctype.restaurant_order.restaurant_order.update_order_status',
+            args: {
+                order_id: orderId,
+                status: status
+            },
+            callback: function(response) {
+                if (response.message && response.message.status === 'success') {
+                    loadOrders(); // Refresh display
+                }
+            }
+        });
+    };
+    
+    function addOrderToDisplay(orderData) {
+        orders[orderData.order_id] = {
+            order_id: orderData.order_id,
+            table: orderData.table,
+            order_type: orderData.order_type,
+            order_time: orderData.order_time,
+            estimated_completion: orderData.estimated_completion,
+            special_instructions: orderData.special_instructions,
+            status: 'Pending',
+            items: orderData.items.map(item => ({
+                item_name: item.item,
+                qty: item.qty,
+                notes: item.notes
+            }))
+        };
+        
+        renderOrders();
+    }
+    
+    function updateOrderStatus(data) {
+        if (orders[data.order_id]) {
+            orders[data.order_id].status = data.status;
+            if (data.status === 'Completed') {
+                delete orders[data.order_id];
+            }
+            renderOrders();
+        }
+    }
+    
+    function removeOrderFromDisplay(orderId) {
+        if (orders[orderId]) {
+            delete orders[orderId];
+            renderOrders();
+        }
+    }
+});
+</script>
+{% endblock %}

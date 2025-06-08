@@ -1,0 +1,157 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2024-01-01 10:00:00.000000",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "table_details_section",
+        "table_number",
+        "capacity",
+        "status",
+        "current_order",
+        "location_section",
+        "floor",
+        "section",
+        "x_position",
+        "y_position",
+        "column_break_8",
+        "shape",
+        "width",
+        "height",
+        "description"
+    ],
+    "fields": [
+        {
+            "fieldname": "table_details_section",
+            "fieldtype": "Section Break",
+            "label": "Table Details"
+        },
+        {
+            "fieldname": "table_number",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Table Number",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "capacity",
+            "fieldtype": "Int",
+            "in_list_view": 1,
+            "label": "Capacity",
+            "reqd": 1
+        },
+        {
+            "default": "Available",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Available\nOccupied\nReserved\nOut of Service",
+            "reqd": 1
+        },
+        {
+            "fieldname": "current_order",
+            "fieldtype": "Link",
+            "label": "Current Order",
+            "options": "Restaurant Order",
+            "read_only": 1
+        },
+        {
+            "fieldname": "location_section",
+            "fieldtype": "Section Break",
+            "label": "Location & Layout"
+        },
+        {
+            "fieldname": "floor",
+            "fieldtype": "Data",
+            "label": "Floor"
+        },
+        {
+            "fieldname": "section",
+            "fieldtype": "Data",
+            "label": "Section"
+        },
+        {
+            "description": "X coordinate for floor plan (pixels)",
+            "fieldname": "x_position",
+            "fieldtype": "Int",
+            "label": "X Position"
+        },
+        {
+            "description": "Y coordinate for floor plan (pixels)",
+            "fieldname": "y_position",
+            "fieldtype": "Int",
+            "label": "Y Position"
+        },
+        {
+            "fieldname": "column_break_8",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Rectangle",
+            "fieldname": "shape",
+            "fieldtype": "Select",
+            "label": "Table Shape",
+            "options": "Rectangle\nCircle\nSquare"
+        },
+        {
+            "default": "80",
+            "fieldname": "width",
+            "fieldtype": "Int",
+            "label": "Width (px)"
+        },
+        {
+            "default": "80",
+            "fieldname": "height",
+            "fieldtype": "Int",
+            "label": "Height (px)"
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Small Text",
+            "label": "Description"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2024-01-01 10:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "Restaurant Management",
+    "name": "Restaurant Table",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Restaurant Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Restaurant User",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "search_fields": "table_number,status,floor,section",
+    "sort_field": "table_number",
+    "sort_order": "ASC",
+    "states": [],
+    "title_field": "table_number",
+    "track_changes": 1
+}

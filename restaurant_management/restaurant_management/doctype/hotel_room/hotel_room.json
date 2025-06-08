@@ -1,0 +1,161 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2024-01-01 10:00:00.000000",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "room_details_section",
+        "room_number",
+        "room_type",
+        "capacity",
+        "status",
+        "column_break_5",
+        "rate_per_night",
+        "floor_number",
+        "view_type",
+        "room_features_section",
+        "amenities",
+        "description",
+        "maintenance_section",
+        "last_maintenance_date",
+        "next_maintenance_date",
+        "maintenance_notes"
+    ],
+    "fields": [
+        {
+            "fieldname": "room_details_section",
+            "fieldtype": "Section Break",
+            "label": "Room Details"
+        },
+        {
+            "fieldname": "room_number",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Room Number",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "room_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Room Type",
+            "options": "\nStandard\nDeluxe\nSuite\nFamily\nExecutive\nPenthouse",
+            "reqd": 1
+        },
+        {
+            "fieldname": "capacity",
+            "fieldtype": "Int",
+            "in_list_view": 1,
+            "label": "Capacity",
+            "reqd": 1
+        },
+        {
+            "default": "Available",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Available\nOccupied\nOut of Order\nMaintenance\nCleaning",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "rate_per_night",
+            "fieldtype": "Currency",
+            "in_list_view": 1,
+            "label": "Rate per Night",
+            "reqd": 1
+        },
+        {
+            "fieldname": "floor_number",
+            "fieldtype": "Int",
+            "label": "Floor Number"
+        },
+        {
+            "fieldname": "view_type",
+            "fieldtype": "Select",
+            "label": "View Type",
+            "options": "\nSea View\nCity View\nGarden View\nMountain View\nPool View\nNo View"
+        },
+        {
+            "fieldname": "room_features_section",
+            "fieldtype": "Section Break",
+            "label": "Room Features"
+        },
+        {
+            "fieldname": "amenities",
+            "fieldtype": "Small Text",
+            "label": "Amenities"
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Text",
+            "label": "Description"
+        },
+        {
+            "fieldname": "maintenance_section",
+            "fieldtype": "Section Break",
+            "label": "Maintenance"
+        },
+        {
+            "fieldname": "last_maintenance_date",
+            "fieldtype": "Date",
+            "label": "Last Maintenance Date"
+        },
+        {
+            "fieldname": "next_maintenance_date",
+            "fieldtype": "Date",
+            "label": "Next Maintenance Date"
+        },
+        {
+            "fieldname": "maintenance_notes",
+            "fieldtype": "Small Text",
+            "label": "Maintenance Notes"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2024-01-01 10:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "Restaurant Management",
+    "name": "Hotel Room",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Hotel Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Hotel User",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "search_fields": "room_number,room_type,status,floor_number",
+    "sort_field": "room_number",
+    "sort_order": "ASC",
+    "states": [],
+    "title_field": "room_number",
+    "track_changes": 1
+}
